@@ -4,6 +4,7 @@ from twilio.rest import Client
 from twilio import twiml
 from credentials import * 
 from subprocess import Popen, PIPE
+from shell import Commander
 
 app = Flask(__name__)
 
@@ -14,11 +15,17 @@ def reply():
     
     client = Client(account_sid,auth_token)
     message_body = request.form['Body']
-    process = Popen(message_body.split(),stdout=PIPE, stderr=PIPE)
-    stdout, stderr = process.communicate()
+    if request.form['From'] != receiver:
+        message = client.messages.create(body="not authenticated",from_=sender,to=request.form['From'])
 
-    message = client.messages.create(body= stdout,from_=sender,to=receiver)
-   
+    cmd = Commander(message_body)
+    cmd.out()
+    if cmd.stdout:
+        message = client.messages.create(body=cmd.stdout,from_=sender,to=receiver)
+    elif cmd.stderr:
+        message = client.messages.create(body=cmd.stderr,from_=sender,to=receiver)
+    else:
+        message = client.messages.create(body="task completed",from_=sender,to=receiver)
     return ";"
 
 
