@@ -26,7 +26,3 @@ class Commander():
                 self.stderr = "no such file or directory"
         return (self.stderr, self.stderr)
 
-c = Commander("ls")
-
-c.out()
-print(c.stderr)
