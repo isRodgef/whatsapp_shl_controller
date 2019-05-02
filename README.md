@@ -8,3 +8,10 @@ Possible Use Cases
 system monitoring while away from computer during lunch.
 
 In order to use this you need to have a twilio account.
+
+You will need to update credenials.py 
+
+* sender = twilio number
+* receiver = number of phone that send shell commands
+* account_sid will get this from twilio
+* auth_token recived from twilio
