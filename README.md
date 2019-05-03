@@ -5,7 +5,9 @@ I created this program when I wanted to control my computer from my phone, so I 
 
 Possible Use Cases
 
-system monitoring while away from computer during lunch.
+*system monitoring while away from computer
+*remote git pushes
+*checking if computer is still on
 
 In order to use this you need to have a twilio account.
 
