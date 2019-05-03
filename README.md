@@ -1,6 +1,6 @@
 # whatsapp_shl_controller
 Basic reverse shell that will be controlled through whatsapp using the twilio whatsapp api
-but 
+
 I created this program when I wanted to control my computer from my phone, so I decided to use whatsapp. I used twilio to handle (with ngrok port forwarding) the sending of whatsapp messages to flask server.
 
 Possible Use Cases
@@ -10,6 +10,8 @@ Possible Use Cases
 *checking if computer is still on
 
 In order to use this you need to have a twilio account.
+
+Have the server running I use ngrok for port forwarding.
 
 You will need to update credenials.py 
 
