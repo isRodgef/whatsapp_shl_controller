@@ -53,9 +53,18 @@ def reply():
         
         if 'MediaUrl0' in request.form.keys():
             r = requests.get(request.form['MediaUrl0'])
-            open('tmp.mp3', 'wb').write(r.content)
-            src = 'tmp.mp3'
-            sound = AudioSegment.from_mp3(src)
+            if request.form['MediaContentType0'] =='audio/mpeg':
+                open('tmp.mp3', 'wb').write(r.content)
+                src = 'tmp.mp3'
+                sound = AudioSegment.from_mp3(src)
+            elif request.form['MediaContentType0'] =='audio/ogg':
+                open('tmp.ogg', 'wb').write(r.content)
+                src = 'tmp.ogg'
+                sound = AudioSegment.from_ogg(src)
+            else:
+                 message = client.messages.create(body="invalid audio type",from_=sender,to=request.form['From'])
+                 return ";"
+
             sound.export('eg.wav',format="wav")
 
             r = sr.Recognizer()
