@@ -1,6 +1,7 @@
 
 import time
 
+import requests
 import flask
 from flask import Flask, request, redirect, send_from_directory
 from twilio.rest import Client
@@ -9,7 +10,19 @@ from credentials import *
 from shell import Commander
 
 from gtts import gTTS
-from playsound import playsound
+
+
+from pydub import AudioSegment
+from pydub.silence import split_on_silence
+
+#speech = gTTS(text = "Rodger is Awesome")    
+#speech.save('voice_notes/a.mp3')
+
+#https://towardsdatascience.com/easy-speech-to-text-with-python-3df0d973b426
+import speech_recognition as sr
+
+
+
 
 app = Flask(__name__,static_folder='voice_notes')
 #
@@ -29,19 +42,42 @@ def send_file(filename):
 @app.route("/whatsapp",methods=['GET', 'POST'])
 def reply():
     try:
+        #import code; code.interact(local=dict(globals(), **locals()))
+        print ("Top of function")
         client = Client(account_sid,auth_token)
         message_body = request.form['Body']
         print (request.form['NumMedia'])
         if request.form['From'] != receiver:
+            print ("Why Rodger")
             message = client.messages.create(body="not authenticated",from_=sender,to=request.form['From'])
         
+        if 'MediaUrl0' in request.form.keys():
+            r = requests.get(request.form['MediaUrl0'])
+            open('tmp.mp3', 'wb').write(r.content)
+            src = 'tmp.mp3'
+            sound = AudioSegment.from_mp3(src)
+            sound.export('eg.wav',format="wav")
+
+            r = sr.Recognizer()
+
+            with sr.AudioFile('eg.wav') as source:
+                audio_text = r.listen(source)
+
+            try:
+
+                text = r.recognize_google(audio_text)
+                client.messages.create(body=text,from_=sender,to=receiver)
+                return text
+            except Exception as e:
+                client.messages.create(body=str(e),from_=sender,to=receiver)
+                return str(e)
+
         if message_body[:2].lower() == "vn" and len(message_body) > 2:
             speech = gTTS(text = message_body[2:])    
             fname = 'voice_notes/' + str(time.time()) + ".mp3"
-            speech.save(fname)
+            speech.save(fname) 
             media_url = "" + fname
-            print (media_url)
-            client.messages.create(media_url=media_url,from_=sender,to=request.form['From'])
+            client.messages.create(media_url=  media_url,from_=sender,to=request.form['From'])
             return "2"
         #import code; code.interact(local=dict(globals(), **locals()))
 
