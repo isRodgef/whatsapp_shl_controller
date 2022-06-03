@@ -19,3 +19,7 @@ You will need to update credenials.py
 * receiver = number of phone that send shell commands
 * account_sid will get this from twilio
 * auth_token recived from twilio
+
+I also added text to speech
+* Send text back get a voice note
+* Send voice note get text back
